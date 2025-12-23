@@ -1,0 +1,9 @@
+pandas
+argparse
+openpyxl
+rich
+python-dotenv
+odfpy
+scikit-bio
+setuptools
+
