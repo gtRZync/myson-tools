@@ -56,7 +56,3 @@ def notify_missing_folder(workDir: Path, stream: Console, patient_level: bool = 
 
     stream.print(panel)
 
-
-# Example usage:
-# notify_missing_folder("/path/to/workdir")         # Patient-level by default
-# notify_missing_folder("/path/to/workdir", False) # Barcode-level

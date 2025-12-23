@@ -22,7 +22,6 @@ def get_metontiime_conf_file_path() -> str | None:
     console = Console()
     console_err = Console(stderr=True)
     _conf_path=os.getenv('CONF_PATH')
-    print(os.getenv('CONF_PATH'))
     if _conf_path is None:
         env_var_missing(
             var_name='CONF_PATH',

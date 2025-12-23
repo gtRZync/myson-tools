@@ -1,26 +1,33 @@
 # !/usr/bin/env python3
-from typing import Callable
-from rich.progress import Progress, SpinnerColumn, TextColumn
-from myson_tools.utils import get_conda_env_path, get_metontiime_conf_file_path
-from myson_tools.command.launch_metontiime import BARCODE_LEVEL, PATIENT_LEVEL
-from rich.console import Console
-from rich.prompt import Prompt
-from rich.align import Align
-from rich.panel import Panel
-from rich.text import Text
-from pathlib import Path
-from rich import box
-import subprocess
-import signal
-import sys
 import os
+import signal
+import subprocess
+import sys
+from pathlib import Path
+from typing import Callable
+
 from dotenv import load_dotenv
+from rich import box
+from rich.align import Align
+from rich.console import Console
+from rich.panel import Panel
+from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.prompt import Prompt
+from rich.text import Text
+
+from myson_tools.command.launch_metontiime import BARCODE_LEVEL, PATIENT_LEVEL
+from myson_tools.utils import (
+    env_var_missing,
+    get_conda_env_path,
+    get_metontiime_conf_file_path,
+)
 
 load_dotenv()
 env = os.environ.copy()
 env["PYTHONUTF8"] = "1"
 
 console = Console()
+console_err = Console(stderr=True)
 
 colors = [
     "#66CCFF",
@@ -167,7 +174,7 @@ def run_subprocess_with_spinner(command_args, env=env, description="Running subp
 
     except Exception as e:
         console.print(f"[bold red]❌ Exception occurred while running subprocess: {e}[/]")
-       
+
 
 def reset_terminal():
     """Resets terminal settings even after subprocess terminal corruption."""
@@ -178,7 +185,7 @@ def reset_terminal():
             stdout=open('/dev/tty', 'w'),
             stderr=subprocess.DEVNULL
         )
-        print("\033[?25h", end="") 
+        print("\033[?25h", end="")
     except Exception as e:
         console.print(f"\n[bold red]Warning: Terminal may still be corrupted ({e})[/]")
         console.print("[bold cyan]Tip: Manually type `reset` and press Enter if needed.[/]")
@@ -196,7 +203,7 @@ def run_subprocess_clean(command_args, env=env):
             console.print("[bold green]✔ Task completed successfully![/]")
         else:
             console.print(f"[bold red]✘ Task failed with exit code {proc.returncode}[/]")
-            
+
 
     except KeyboardInterrupt:
         console.print("\n[bold yellow]⏹ Interrupted by user (Ctrl+C)[/]")
@@ -218,7 +225,7 @@ def prompt_for_path(prompt_text, default=None, optional=False):
             return val if val else default
         else:
             console.print("[bold red]This field is required.[/]")
-            
+
 def run_python_tool(module: str, args: list | None = None, description: str = "Running module...", subprocess_fn: Callable[[list[str]], None] | None = None) -> None:
     """
     Run a Python tool via -m module.
@@ -227,10 +234,10 @@ def run_python_tool(module: str, args: list | None = None, description: str = "R
     -------------------
         module (str) : the module to be ran path
         args (list, optional) : a list of arguments that'll be used as cli args
-        description (str) : the description that'll when the tool will be running 
+        description (str) : the description that'll when the tool will be running
         subprocess_fn(Callable(list[str]) -> None) : mainly to allow the use of subprocess_clean
     """
-    
+
     cmd = [sys.executable, '-m', module]
     if args:
         cmd += args
@@ -238,12 +245,18 @@ def run_python_tool(module: str, args: list | None = None, description: str = "R
         subprocess_fn(cmd)
     else:
         run_subprocess_with_spinner(cmd, description=description)
-    
+
 
 def main():
     signal.signal(signal.SIGINT, graceful_exit)
     sys.stdout.reconfigure(encoding='utf-8')  # type: ignore
     console.print(Align.center(gradient_text(ASCII_ART, colors)))
+    _workdir=os.getenv('DEFAULT_WORK_DIR')
+    if _workdir is None:
+        env_var_missing(
+            'DEFAULT_WORK_DIR',
+            console_err
+        )
     while True:
         display_menu()
         choice = Prompt.ask("[bold white]Enter your choice[/]", choices=[str(i) for i in range(1, 14)])
@@ -260,7 +273,7 @@ def main():
             output_file = prompt_for_path("Enter the output directory. Output filename will be <feature_table_basename>_alpha_diversity_merged.csv")
 
             args = ["-f", feature_table, "-m", metadata, "-o", output_file]
-            
+
             run_python_tool(
                 module="myson_tools.command.alpha_div_analysis",
                 args=args,
@@ -271,7 +284,7 @@ def main():
             # Get Feature tables
             folder = prompt_for_path("Enter the path to the '2_Result' folder for TSV extraction")
             output_dir = prompt_for_path("Enter an output directory for the frequency_level folders")
-    
+
             args = ["--folder", folder, "--output", output_dir]
             run_python_tool(
                 module="myson_tools.command.get_feature_table",
@@ -281,10 +294,10 @@ def main():
             continue
         elif choice == '9':
             # Get QZA tables and taxonomy
-            
+
             folder = prompt_for_path("Enter the path to the '2_Result' folder for QZA extraction")
             output_dir = prompt_for_path("Enter an output directory for the frequency_level folders")
-        
+
             args = ["--folder", folder, "--output", output_dir]
             run_python_tool(
                 module='myson_tools.command.get_qza_tables_and_taxonomy',
@@ -318,7 +331,7 @@ def main():
                 args += ['-e', excel]
             if folder:
                 args += ['-f', folder]
-            
+
             run_python_tool(
                 module="myson_tools.command.cli_barcode_folder_renamer",
                 args=args,
@@ -338,7 +351,7 @@ def main():
             if folder:
                 args += ['-f', folder]
             args.append("--create-folders")
-            
+
             run_python_tool(
                 module="myson_tools.command.cli_patient_folder_manager",
                 args=args,
@@ -358,7 +371,7 @@ def main():
             if folder:
                 args += ['-f', folder]
             args.append("--sort-samples")
-            
+
             run_python_tool(
                 module="myson_tools.command.cli_patient_folder_manager",
                 args=args,
@@ -368,11 +381,10 @@ def main():
         elif choice == '4':
             # Launch MetONTIIME pipeline (Patient - Level)
             pathDir = prompt_for_path("PathDir (required)")
-            workDir = prompt_for_path("WorkDir", default="1_Raw_data/fastq_pass", optional=True)
-            # conf = get_metontiime_conf_file_path()
-            # if not conf: 
-            #     continue
-            conf=''
+            workDir = prompt_for_path("WorkDir", default=_workdir, optional=True)
+            conf = get_metontiime_conf_file_path()
+            if not conf:
+                continue
             metadata = prompt_for_path("Metadata (optional, leave blank for default)", optional=True)
             resume = Prompt.ask("Resume?", choices=["yes", "no"], default="no")
             skip = prompt_for_path("Skip (space-separated list or @path/to/skip-list.txt, optional)", optional=True)
@@ -386,7 +398,7 @@ def main():
                 args += ['--resume']
             if skip:
                 args += ['--skip'] + skip.split()
-            
+
             run_python_tool(
                 module="myson_tools.command.launch_metontiime",
                 args=args,
@@ -396,18 +408,17 @@ def main():
         elif choice == '5':
             # Launch MetONTIIME pipeline (Barcode - Level)
             pathDir = prompt_for_path("PathDir (required)")
-            workDir = prompt_for_path("WorkDir", default="1_Raw_data/fastq_pass", optional=True)
-            # conf = get_metontiime_conf_file_path()
-            # if not conf: 
-            #     continue
-            conf=''
+            workDir = prompt_for_path("WorkDir", default=_workdir, optional=True)
+            conf = get_metontiime_conf_file_path()
+            if not conf:
+                continue
             skip = prompt_for_path("Skip (space-separated list or @path/to/skip-list.txt, optional)", optional=True)
             args = ['-p', pathDir, '-c', conf, '--level', BARCODE_LEVEL]
             if workDir:
                 args += ['-w', workDir]
             if skip:
                 args += ['--skip'] + skip.split()
-                
+
             run_python_tool(
                 module="myson_tools.command.launch_metontiime",
                 args=args,
@@ -421,7 +432,7 @@ def main():
             args = ['-p', folder_path]
             if force == "yes":
                 args.append('--force')
-            
+
             run_python_tool(
                 module="myson_tools.command.separate_metadata",
                 args=args,
@@ -433,10 +444,10 @@ def main():
             path_dir = prompt_for_path("Path to run directory (ex: 241126_ICMc..etc)")
             output_dir = prompt_for_path("Enter an output directory for the skip_list.txt")
             args = ['--path-dir', path_dir, '--output', output_dir]
-            
+
             run_python_tool(
-                module="myson_tools.command.generate_skip_list", 
-                args=args, 
+                module="myson_tools.command.generate_skip_list",
+                args=args,
                 description="🛑 Generating skip list of samples to exclude..."
             )
             continue
