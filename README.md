@@ -106,7 +106,7 @@ code .env
 After installation and environment setup, run:
 
 ```sh
-paul-tools
+myson-tools
 ```
 
 and follow the interactive menu.
