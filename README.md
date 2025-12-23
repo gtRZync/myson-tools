@@ -36,39 +36,94 @@
     <img src="images/menu.png" alt="Menu" w/> 
 </h1>
 
+---
+
 ## Installation
 
 Clone the repository:
 
 ```sh
-git clone https://github.com/gtRZync/myson-tools.git
+git clone https://github.com/gtrZync/myson-tools.git
+cd myson-tools
 ```
 
-```sh
-cd myson-tools/
-```
-
-install locally: 
+### Install (regular mode)
 
 ```sh
 pip install .
 ```
 
-Or for development mode:
+**What this does**
+
+* Installs the package into your Python environment
+* Code is **copied** into `site-packages`
+* Changes to the source code **will NOT** affect the installed package
+* Best for **end users** or **production environments**
+
+---
+
+### Install (development mode)
 
 ```sh
 pip install -e .
 ```
 
-## Usage
+**What development mode does**
 
-After installation, run:
+* Installs the package in **editable mode**
+* The installed command points to your **working directory**
+* Any code changes take effect **immediately**
+* Ideal for **development, testing, and debugging**
+
+---
+
+## Environment setup
+
+Before running the tool, create your environment file:
 
 ```sh
-myson-tools
+cp .env.example .env
+```
+
+Then edit `.env` and adjust paths for your system:
+
+```sh
+nano .env
+```
+or 
+```sh
+vim .env
+```
+also
+```sh
+code .env
+```
+
+---
+
+## Usage
+
+After installation and environment setup, run:
+
+```sh
+paul-tools
 ```
 
 and follow the interactive menu.
+
+If installed in development mode, any changes you make to the source code will be reflected immediately when you rerun the command.
+
+---
+
+### Recommended workflow
+
+| Use case            | Install mode       |
+| ------------------- | ------------------ |
+| Just using the tool | `pip install .`    |
+| Actively developing | `pip install -e .` |
+| Server / production | `pip install .`    |
+
+---
 
 <p align="center">
   <a href="https://www.gnu.org/licenses/gpl-3.0.html">
