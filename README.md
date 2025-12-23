@@ -70,4 +70,14 @@ myson-tools
 
 and follow the interactive menu.
 
-<p align="center"><a href="https://github.com/catppuccin/catppuccin/blob/main/LICENSE"><img src="https://img.shields.io/static/v1.svg?style=for-the-badge&label=License&message=MIT&colorA=363a4f&colorB=b7bdf8"/></a></p>
+<p align="center">
+  <a href="https://www.gnu.org/licenses/gpl-3.0.html">
+    <img src="https://img.shields.io/static/v1.svg?style=for-the-badge&label=License&message=GPL-3.0&colorA=363a4f&colorB=b7bdf8"/>
+  </a>
+</p>
+
+<p align="center">
+  If you modify or redistribute this software, you must preserve copyright notices,
+  provide a copy of the license, indicate if changes were made, and distribute your
+  contributions under the same license.
+</p>
