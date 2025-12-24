@@ -1,4 +1,5 @@
 # !/usr/bin/env python3
+import argparse
 import os
 import signal
 import subprocess
@@ -21,10 +22,6 @@ from myson_tools.utils import (
     get_conda_env_path,
     get_metontiime_conf_file_path,
 )
-
-load_dotenv()
-env = os.environ.copy()
-env["PYTHONUTF8"] = "1"
 
 console = Console()
 console_err = Console(stderr=True)
@@ -121,7 +118,7 @@ def display_help_panel():
     console.print(panel)
 
 
-def run_subprocess_with_spinner(command_args, env=env, description="Running subprocess..."):
+def run_subprocess_with_spinner(command_args, env=None, description="Running subprocess..."):
     """
     Run a subprocess command with a rich spinner and clean output formatting.
 
@@ -130,6 +127,9 @@ def run_subprocess_with_spinner(command_args, env=env, description="Running subp
         env (dict, optional): Environment variables.
         description (str): Message to show beside the spinner.
     """
+    if env is None:
+        env = os.environ.copy()
+        env["PYTHONUTF8"] = "1"
     try:
         with Progress(
             SpinnerColumn(),
@@ -190,7 +190,11 @@ def reset_terminal():
         console.print(f"\n[bold red]Warning: Terminal may still be corrupted ({e})[/]")
         console.print("[bold cyan]Tip: Manually type `reset` and press Enter if needed.[/]")
 
-def run_subprocess_clean(command_args, env=env):
+def run_subprocess_clean(command_args, env=None):
+
+    if env is None:
+        env = os.environ.copy()
+        env["PYTHONUTF8"] = "1"
     try:
         proc = subprocess.Popen(
             command_args,
@@ -246,12 +250,31 @@ def run_python_tool(module: str, args: list | None = None, description: str = "R
     else:
         run_subprocess_with_spinner(cmd, description=description)
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description='args for the dev')
+    parser.add_argument(
+        '--env',
+        required=False,
+        action='store_true',
+        help='Enable using relative .env file for devs'
+    )
+
+    return parser.parse_args()
 
 def main():
     signal.signal(signal.SIGINT, graceful_exit)
     sys.stdout.reconfigure(encoding='utf-8')  # type: ignore
     console.print(Align.center(gradient_text(ASCII_ART, colors)))
+    args = parse_args()
+
+    if args.env:
+        load_dotenv()
+    else:
+        env_path = Path.home() / '.myson-tools.env'
+        load_dotenv(env_path)
+
     _workdir=os.getenv('DEFAULT_WORK_DIR')
+
     if _workdir is None:
         env_var_missing(
             'DEFAULT_WORK_DIR',
