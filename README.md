@@ -86,22 +86,22 @@ The tool will use a global `.env` in your home directory.
 
 **Linux/macOS**
 ```bash
-cp .env.example ~/.paul_tools.env
-nano ~/.paul_tools.env   # or vim ~/.paul_tools.env
+cp .env.example ~/.myson-tools.env
+nano ~/.myson-tools.env   # or vim ~/.myson-tools.env
 ````
 
 **Windows (Command Prompt)**
 
 ```cmd
-copy .env.example %USERPROFILE%\.paul_tools.env
-notepad %USERPROFILE%\.paul_tools.env
+copy .env.example %USERPROFILE%\.myson-tools.env
+notepad %USERPROFILE%\.myson-tools.env
 ```
 
 **Windows (PowerShell)**
 
 ```powershell
-Copy-Item .env.example $HOME\.paul_tools.env
-notepad $HOME\.paul_tools.env
+Copy-Item .env.example $HOME\.myson-tools.env
+notepad $HOME\.myson-tools.env
 ```
 
 You can now run the tool normally:
