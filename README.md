@@ -77,43 +77,71 @@ pip install -e .
 
 ---
 
-## Environment setup
+## Environment Setup
 
-Before running the tool, create your environment file:
+Before running the tool for the first time, you need to create your environment file. There are two modes: **normal/production usage** and **development**.
 
-```sh
+### Normal / Production Usage
+The tool will use a global `.env` in your home directory.
+
+**Linux/macOS**
+```bash
+cp .env.example ~/.paul_tools.env
+nano ~/.paul_tools.env   # or vim ~/.paul_tools.env
+````
+
+**Windows (Command Prompt)**
+
+```cmd
+copy .env.example %USERPROFILE%\.paul_tools.env
+notepad %USERPROFILE%\.paul_tools.env
+```
+
+**Windows (PowerShell)**
+
+```powershell
+Copy-Item .env.example $HOME\.paul_tools.env
+notepad $HOME\.paul_tools.env
+```
+
+You can now run the tool normally:
+
+```bash
+my_tool
+```
+
+---
+
+### Development Usage
+
+For development, you can use a project-specific `.env` file instead of the global one.
+
+**Linux/macOS**
+
+```bash
 cp .env.example .env
+nano .env   # or vim .env
 ```
 
-Then edit `.env` and adjust paths for your system:
+**Windows (Command Prompt)**
 
-```sh
-nano .env
-```
-or 
-```sh
-vim .env
-```
-also
-```sh
-code .env
+```cmd
+copy .env.example .env
+notepad .env
 ```
 
----
+**Windows (PowerShell)**
 
-## Usage
-
-After installation and environment setup, run:
-
-```sh
-myson-tools
+```powershell
+Copy-Item .env.example .env
+notepad .env
 ```
 
-and follow the interactive menu.
+Then run the tool with the `--env` flag to use the local `.env`:
 
-If installed in development mode, any changes you make to the source code will be reflected immediately when you rerun the command.
-
----
+```bash
+my_tool --env
+```
 
 ### Recommended workflow
 
