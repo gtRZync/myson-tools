@@ -107,7 +107,7 @@ notepad $HOME\.myson-tools.env
 You can now run the tool normally:
 
 ```bash
-my_tool
+myson-tools
 ```
 
 ---
@@ -137,10 +137,10 @@ Copy-Item .env.example .env
 notepad .env
 ```
 
-Then run the tool with the `--env` flag to use the local `.env`:
+Then run the tool with the `--dev-env` flag to use the local `.env`:
 
 ```bash
-my_tool --env
+myson-tools --dev-env
 ```
 
 ### Recommended workflow
