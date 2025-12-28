@@ -253,7 +253,7 @@ def run_python_tool(module: str, args: list | None = None, description: str = "R
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='args for the dev')
     parser.add_argument(
-        '--env',
+        '--dev-env',
         required=False,
         action='store_true',
         help='Enable using relative .env file for devs'
@@ -267,7 +267,7 @@ def main():
     console.print(Align.center(gradient_text(ASCII_ART, colors)))
     args = parse_args()
 
-    if args.env:
+    if args.dev_env:
         load_dotenv()
     else:
         env_path = Path.home() / '.myson-tools.env'
