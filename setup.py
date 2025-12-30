@@ -5,6 +5,8 @@ setup(
     version="0.1.2",
     description="A set of bioinformatics tools (by Myson)",
     author="Myson Dio",
+    license='GPL-3.0',
+    url="https://github.com/gtRZync/myson-tools",
     packages=find_packages(),
     install_requires=[
         "pandas",
