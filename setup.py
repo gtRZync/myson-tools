@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="myson-tools",
-    version="0.1.2",
+    version="0.1.4",
     description="A set of bioinformatics tools (by Myson)",
     author="Myson Dio",
     license='GPL-3.0',
