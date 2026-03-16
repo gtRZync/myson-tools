@@ -1,14 +1,11 @@
 > [!IMPORTANT]
-> The current CLI interface uses `rich` and redraws the menu after each interaction.
-> This may result in verbose terminal output.
+> The current CLI interface uses [rich](https://github.com/Textualize/rich) and redraws the menu after each interaction.
+> As a result, the terminal output can become somewhat **verbose** during normal use.
 >
-> The behavior is intentional for now, as we preserve the full terminal history for
-> logging and debugging during pipeline runs.
+> A future refactor is planned to migrate the interactive prompts to
+> [questionary](https://github.com/tmbo/questionary), which will provide a cleaner and more interactive CLI experience.
 >
-> A future refactor will migrate the interactive prompts to
-> `questionary` (https://github.com/tmbo/questionary) to provide a cleaner
-> interactive experience.
-> This change is postponed due to higher-priority academic work.
+> This improvement is currently **postponed due to higher-priority academic work**, but it remains on the project's roadmap.
 
 <h1 align="center"> 
     <img src="images/logo.png" alt="Logo" w/> 
