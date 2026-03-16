@@ -1,3 +1,15 @@
+> [!IMPORTANT]
+> The current CLI interface uses `rich` and redraws the menu after each interaction.
+> This may result in verbose terminal output.
+>
+> The behavior is intentional for now, as we preserve the full terminal history for
+> logging and debugging during pipeline runs.
+>
+> A future refactor will migrate the interactive prompts to
+> `questionary` (https://github.com/tmbo/questionary) to provide a cleaner
+> interactive experience.
+> This change is postponed due to higher-priority academic work.
+
 <h1 align="center"> 
     <img src="images/logo.png" alt="Logo" w/> 
 </h1>
